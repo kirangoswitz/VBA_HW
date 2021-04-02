@@ -18,8 +18,16 @@ For Each ws In Sheets
 
         if ws.Cells(i+1,1).value <> ws.Cells(i,1).value Then
             LastPrice=ws.Cells(i,6).value
-            TotChange=FirstPrice-LastPrice
-            PctChange=TotChange/FirstPrice
+            TotChange=LastPrice-FirstPrice
+            if FirstPrice<>0 Then
+                PctChange=TotChange/FirstPrice
+            elseif FirstPrice=0 and LastPrice>0 Then
+                PctChange=999999999
+            elseif FirstPrice=0 and LastPrice<0 Then
+                PctChange=-999999999
+            else
+                PctChange=0
+            end if
             ws.Cells(RowCounter,9).Value=ws.Cells(i,1).value
             ws.Cells(RowCounter,10).Value=TotChange
             ws.Cells(RowCounter,11).Value=PctChange
@@ -35,7 +43,7 @@ For Each ws In Sheets
     ws.Cells(1,11).Value="Percent Change"
     ws.Cells(1,12).Value="Total Volume"
 
-    for p = 2 to RowCounter
+    for p = 2 to RowCounter-1
         if ws.Cells(p,10).value > 0 Then
             ws.Cells(p,10).Interior.ColorIndex=4
         elseif ws.Cells(p,10).Value < 0 Then
